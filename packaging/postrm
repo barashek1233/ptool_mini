@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+# Снимаем capabilities с бинарника при удалении пакета.
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+    if command -v setcap > /dev/null 2>&1 && [ -f /usr/bin/ptool_mini ]; then
+        setcap -r /usr/bin/ptool_mini 2>/dev/null || true
+    fi
+fi

@@ -1,0 +1,12 @@
+ACTION=="remove", GOTO="ptool_mini_end"
+
+# Atmel SAM-BA CDC (ttyACM)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", GROUP="ptool"
+
+# Allwinner devices (FEL mode and other)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1f3a", GROUP="ptool"
+
+# Allwinner devices in mass-storage mode
+SUBSYSTEM=="block", ATTRS{idVendor}=="1f3a", GROUP="ptool"
+
+LABEL="ptool_mini_end"

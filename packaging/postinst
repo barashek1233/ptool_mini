@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+if [ "$1" = configure ]; then
+    # Add ptool group if not already
+    getent group ptool > /dev/null || addgroup --system ptool
+    # Set capabilities required for flashing aQsi devices with Allwinner SoCs
+    setcap cap_sys_admin,cap_sys_rawio+ep /usr/bin/ptool_mini
+fi
+
+if command -v udevadm > /dev/null 2>&1; then
+    udevadm control --reload-rules || true
+    udevadm trigger --subsystem-match=usb || true
+    udevadm trigger --subsystem-match=tty || true
+    udevadm trigger --subsystem-match=block || true
+fi

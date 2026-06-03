@@ -1,0 +1,10 @@
+#pragma once
+
+#include <QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(cat_common)
+Q_DECLARE_LOGGING_CATEGORY(cat_cube_flasher)
+Q_DECLARE_LOGGING_CATEGORY(cat_json_parser)
+Q_DECLARE_LOGGING_CATEGORY(cat_mapping)
+Q_DECLARE_LOGGING_CATEGORY(cat_hardware_detection)
+Q_DECLARE_LOGGING_CATEGORY(cat_dialog)
