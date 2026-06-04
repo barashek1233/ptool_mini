@@ -74,6 +74,7 @@ int runSambaTool(int argc, char* argv[])
     QStringList const qml_candidates{
         d.filePath("lib/qml"),
         d.filePath("qml"),
+        d.filePath("../lib/qml"),
         d.filePath("../lib/ptool/qml")};
     for (QString const& candidate : qml_candidates) {
         if (QDir(candidate).exists()) {
@@ -85,6 +86,7 @@ int runSambaTool(int argc, char* argv[])
     QStringList const metadata_candidates{
         d.filePath("lib/metadata"),
         d.filePath("metadata"),
+        d.filePath("../lib/metadata"),
         d.filePath("../lib/ptool/metadata")};
     for (QString const& candidate : metadata_candidates) {
         if (QDir(candidate).exists()) {
