@@ -1,7 +1,12 @@
 ACTION=="remove", GOTO="ptool_mini_end"
 
 # Atmel SAM-BA CDC (ttyACM)
-SUBSYSTEM=="tty", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", GROUP="ptool"
+# ENV{ID_MM_DEVICE_IGNORE} prevents ModemManager from claiming the port.
+# ENV{BRLTTY_BRAILLE_DEVICE_IGNORE} prevents brltty (pre-installed on Ubuntu 22.04)
+# from claiming Atmel VID 03eb devices — without this, sam-ba cannot communicate
+# with the device on Ubuntu 22.04 servers.
+SUBSYSTEM=="tty", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", GROUP="ptool", MODE="0660", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", ENV{ID_MM_DEVICE_IGNORE}="1", ENV{BRLTTY_BRAILLE_DEVICE_IGNORE}="1"
 
 # Allwinner devices (FEL mode and other)
 SUBSYSTEM=="usb", ATTRS{idVendor}=="1f3a", GROUP="ptool"
