@@ -48,11 +48,9 @@ void ConsoleAllwinnerFlasher::initFlashing(const QString& image_path)
         return;
     }
 
-    qDebug() << "Polling запущен. Ожидаем подключения устройства.";
 }
 
 void ConsoleAllwinnerFlasher::onDeviceConnected(const QString& device) {
-    qInfo() << "Устройство подключено:" << device;
 }
 
 void ConsoleAllwinnerFlasher::onDeviceDisconnected(const QString& device) {
@@ -71,18 +69,16 @@ void ConsoleAllwinnerFlasher::onDeviceDisconnected(const QString& device) {
 }
 
 void ConsoleAllwinnerFlasher::onDeviceFlashingStarted(const QString& device) {
-    qDebug() << "Прошивка начата для устройства:" << device;
     m_flashing_started.insert(device);
 }
 
 void ConsoleAllwinnerFlasher::onDeviceFlashingResumed(const QString& device) {
-    qDebug() << "Прошивка возобновлена для:" << device;
     m_flashing_started.insert(device);
 }
 
 void ConsoleAllwinnerFlasher::onDeviceFlashingCompleted(const QString& device) {
     if (m_flash_completed.fetchAndAddAcquire(1) == 0) {
-        qDebug() << "Первое устройство успешно прошито. Завершение работы.";
+        qInfo() << "Первое устройство успешно прошито. Завершение работы.";
         emit flashingFinished(0);
     }
 }

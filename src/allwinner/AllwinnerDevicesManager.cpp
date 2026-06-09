@@ -275,6 +275,7 @@ void
 AllwinnerDevicesManager::onDeviceConnected(caf_device* libc_device, QString const& device)
 {
     auto const cable = _ensureCableNumber(device);
+    m_pre_started_devices.insert(device);
     qCInfo(cat_cube_flasher).noquote()
         << QStringLiteral("Подключено новое устройство. Номер кабеля: '%1', имя устройства: '%2'")
                .arg(QString::number(cable), device);
@@ -302,6 +303,7 @@ AllwinnerDevicesManager::onDeviceDisconnected(caf_device *libc_device, QString c
     QMutexLocker lock(&m_connected_devices_mx);
     m_connected_devices.remove(libc_device);
     m_logged_stage_classes.remove(device);
+    m_pre_started_devices.remove(device);
     m_waiting_for_resume_devices.remove(device);
 }
 
@@ -310,6 +312,7 @@ AllwinnerDevicesManager::onDeviceFlashingStarted(QString const& device)
 {
     auto const cable = _ensureCableNumber(device);
     m_logged_stage_classes.remove(device);
+    m_pre_started_devices.remove(device);
     m_waiting_for_resume_devices.insert(device);
     qCInfo(cat_cube_flasher).noquote()
         << QStringLiteral("Запущен процесс прошивки устройства. Номер кабеля: %1. Имя устройства: '%2'")
@@ -415,7 +418,7 @@ AllwinnerDevicesManager::AllwinnerLibrary::init(AllwinnerDevicesManager* manager
 void
 AllwinnerDevicesManager::onDeviceLibraryLog(QString const& device, caf_loglevel, QString const& message)
 {
-    if (m_waiting_for_resume_devices.contains(device)) {
+    if (m_pre_started_devices.contains(device) || m_waiting_for_resume_devices.contains(device)) {
         return;
     }
     auto const stage_message = detectStageMessage(message);

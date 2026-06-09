@@ -65,6 +65,7 @@ private:
     QHash<QString, int> m_device_to_cable;
     QHash<QString, QSet<int>> m_logged_stage_classes;
     QSet<QString> m_waiting_for_resume_devices;
+    QSet<QString> m_pre_started_devices;
     int m_next_cable_number{1};
 
     int _ensureCableNumber(QString const& device);
