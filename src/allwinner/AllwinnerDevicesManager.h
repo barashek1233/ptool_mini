@@ -17,6 +17,8 @@ public:
 
     void startPolling();
 
+    int cableNumber(QString const& device) const;
+
     void onDeviceConnected(caf_device* libc_device, QString const& device);
     void onDeviceDisconnected(caf_device* libc_device, QString const& device);
 

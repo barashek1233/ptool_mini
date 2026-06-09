@@ -446,6 +446,12 @@ AllwinnerDevicesManager::_ensureCableNumber(QString const& device)
 }
 
 int
+AllwinnerDevicesManager::cableNumber(QString const& device) const
+{
+    return _cableNumber(device);
+}
+
+int
 AllwinnerDevicesManager::_cableNumber(QString const& device) const
 {
     auto it = m_device_to_cable.find(device);

@@ -106,7 +106,7 @@ void ConsoleAllwinnerFlasher::onDeviceFlashingFailed(const QString& device) {
 }
 
 void ConsoleAllwinnerFlasher::onDeviceFlashingProgressChanged(const QString& device, int progress) {
-    qDebug() << "Прогресс прошивки" << device << ":" << progress << "%";
+    qDebug() << "Прогресс прошивки кабель" << m_devices_manager.cableNumber(device) << ":" << progress << "%";
 }
 
 void ConsoleAllwinnerFlasher::onDeviceManualPowerCycleRequested(const QString& device) {
