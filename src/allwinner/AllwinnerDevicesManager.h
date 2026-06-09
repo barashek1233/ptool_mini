@@ -11,6 +11,7 @@ class AllwinnerDevicesManager : public QObject
     Q_OBJECT
 public:
     AllwinnerDevicesManager();
+    ~AllwinnerDevicesManager();
 
     bool setImageFilepath(QString const& image_filepath);
 

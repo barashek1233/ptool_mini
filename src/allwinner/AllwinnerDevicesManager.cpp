@@ -255,6 +255,14 @@ AllwinnerDevicesManager::startPolling()
     QAbstractEventDispatcher::instance()->registerSocketNotifier(n);
 }
 
+AllwinnerDevicesManager::~AllwinnerDevicesManager()
+{
+    // Members are destroyed after this body runs. Background threads (caf_device_install_image)
+    // call callbacks that access m_waiting_for_resume_devices, m_logged_stage_classes, etc.
+    // Wait for all threads to finish before those members are destroyed.
+    m_pool.waitForDone();
+}
+
 AllwinnerDevicesManager::AllwinnerDevicesManager() : QObject()
 {
     static auto const kMaxConcurrentlyFlashedDevices = 64;
@@ -333,7 +341,7 @@ AllwinnerDevicesManager::onDeviceFlashingFailed(QString const& device)
     m_waiting_for_resume_devices.remove(device);
     auto const cable = _cableNumber(device);
     qCWarning(cat_dialog).noquote()
-        << QStringLiteral("Не удалось начать прошивку устройства '%1'. Снимите джампер.").arg(device);
+        << QStringLiteral("Не удалось начать прошивку устройства '%1'. Снимите перемычку.").arg(device);
     qCWarning(cat_cube_flasher).noquote()
         << QStringLiteral("Не удалось прошить устройство с номером кабеля '%1'.").arg(QString::number(cable));
     emit deviceFlashingFailed(device);
@@ -364,7 +372,7 @@ void AllwinnerDevicesManager::onDeviceManualPowerCycleRequested(QString const& d
 
 void AllwinnerDevicesManager::onDeviceFelJumperRemovalRequested(QString const& device) {
     qCWarning(cat_dialog).noquote()
-        << QStringLiteral("Требуется снять FEL-перемычку на устройстве: '%1'").arg(device);
+        << QStringLiteral("Снимите FEL-перемычку на устройстве: '%1'").arg(device);
     emit deviceFelJumperRemovalRequested(device);
 }
 

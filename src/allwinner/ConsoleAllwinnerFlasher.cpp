@@ -114,6 +114,5 @@ void ConsoleAllwinnerFlasher::onDeviceManualPowerCycleRequested(const QString& d
 }
 
 void ConsoleAllwinnerFlasher::onDeviceFelJumperRemovalRequested(const QString& device) {
-    qWarning() << "Требуется снять FEL-перемычку:" << device;
 }
 

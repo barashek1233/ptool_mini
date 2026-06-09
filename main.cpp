@@ -127,6 +127,22 @@ int runAtmelHeadless(QCoreApplication& application, const QString& image_path)
         return 2;
     }
 
+    {
+        QDir const dir(image_path);
+        if (dir.entryList({"*.ubi", "*.ubi.bin"}, QDir::Files).isEmpty()) {
+            QTextStream(stderr) << "ptool_mini: no *.ubi image files found in: " << image_path << "\n";
+            return 2;
+        }
+        if (!dir.exists("u-boot.bin")) {
+            QTextStream(stderr) << "ptool_mini: u-boot.bin not found in: " << image_path << "\n";
+            return 2;
+        }
+        if (!dir.exists("at91bootstrap.bin")) {
+            QTextStream(stderr) << "ptool_mini: at91bootstrap.bin not found in: " << image_path << "\n";
+            return 2;
+        }
+    }
+
     Mapping mapping;
     CubeFlasherManager cube_flasher_manager;
     static DevNotifyQtStyle dev;

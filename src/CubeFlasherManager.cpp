@@ -435,7 +435,7 @@ CubeFlasherManager::_onFlasherCouldNotStart(int cable_number)
 {
     auto const device = m_devices_to_cables.value(cable_number);
     qCWarning(cat_dialog).noquote()
-        << QStringLiteral("Не удалось запустить прошивку устройства '%1'. Снимите джампер и повторите подключение.")
+        << QStringLiteral("Не удалось запустить прошивку устройства '%1'. Снимите перемычку и повторите подключение.")
                .arg(device);
     if (not device.isEmpty() && !isAutoFlashingSuppressedForDevice(device)) {
         _scheduleRetry(cable_number, device);
