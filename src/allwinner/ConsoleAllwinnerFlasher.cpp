@@ -81,12 +81,9 @@ void ConsoleAllwinnerFlasher::onDeviceFlashingResumed(const QString& device) {
 }
 
 void ConsoleAllwinnerFlasher::onDeviceFlashingCompleted(const QString& device) {
-    qDebug() << "Прошивка завершена успешно для:" << device;
-
-    // Проверяем, что это первое успешное завершение
     if (m_flash_completed.fetchAndAddAcquire(1) == 0) {
         qDebug() << "Первое устройство успешно прошито. Завершение работы.";
-        emit flashingFinished(0);  // Сигнал на завершение приложения
+        emit flashingFinished(0);
     }
 }
 

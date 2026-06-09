@@ -298,18 +298,13 @@ CubeFlasher::_runNextCommand()
         return;
     }
     if (m_next_command_index == m_commands.size()) {
-        static auto const kDeviceFlashedMessage = QStringLiteral("Устройство успешно прошито");
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
         QMetaObject::invokeMethod(
             this,
-            [this]() {
-                emit flashed(m_cable_number);
-                qCInfo(cat_cube_flasher).noquote() << withPortPrefix(m_cable_number, kDeviceFlashedMessage);
-            },
+            [this]() { emit flashed(m_cable_number); },
             Qt::QueuedConnection);
 #else
         QMetaObject::invokeMethod(this, "flashed", Qt::QueuedConnection, Q_ARG(int, m_cable_number));
-        qCInfo(cat_cube_flasher).noquote() << withPortPrefix(m_cable_number, kDeviceFlashedMessage);
 #endif
         return;
     }

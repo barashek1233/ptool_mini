@@ -25,9 +25,6 @@ ConsoleAtmelFlasher::ConsoleAtmelFlasher(CubeFlasherManager& manager, QObject* p
 
 void ConsoleAtmelFlasher::onDeviceFlashedCompleted(int cable_number)
 {
-    qDebug() << "Устройство успешно прошито на кабеле:" << cable_number;
-
-    // Проверяем, что это первое успешное завершение
     if (m_flash_completed.fetchAndAddAcquire(1) == 0) {
         qDebug() << "Первое устройство успешно прошито. Завершение работы.";
         emit flashingFinished(0);

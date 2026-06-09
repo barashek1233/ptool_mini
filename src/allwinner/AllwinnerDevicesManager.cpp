@@ -330,8 +330,6 @@ AllwinnerDevicesManager::onDeviceFlashingCompleted(QString const& device)
 {
     m_waiting_for_resume_devices.remove(device);
     _logStageIfNeeded(device, QStringLiteral("Идет процесс верификации прошивки"));
-    qCInfo(cat_cube_flasher).noquote()
-        << _withPortPrefix(_cableNumber(device), QStringLiteral("Устройство успешно прошито"));
     emit deviceFlashingCompleted(device);
 }
 

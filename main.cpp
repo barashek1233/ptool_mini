@@ -33,7 +33,6 @@ bool shouldPrintAtmelConsoleLog(QString const& category, QString const& message)
         QStringLiteral("Идет процесс записи прошивки"),
         QStringLiteral("Идет процесс верификации прошивки"),
         QStringLiteral("Прогресс прошивки"),
-        QStringLiteral("Устройство успешно прошито"),
         QStringLiteral("Не удалось запустить прошивку устройства"),
         QStringLiteral("Снимите джампер"),
         QStringLiteral("Прошивка не смогла начаться"),
