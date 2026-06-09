@@ -8,6 +8,7 @@
 #include <QSettings>
 #include <QDebug>
 #include <QElapsedTimer>
+#include <QMap>
 #include <QRegularExpression>
 
 #include "bootconfigparser.h"
@@ -374,12 +375,34 @@ CubeFlasher::_readyReadStandardError()
     static QRegularExpression const r("\\((\\d+)\\.\\d+%\\)");
     auto const match = r.match(stage_output);
     if (match.hasMatch()) {
-        int const progress = match.captured(1).toInt();
-        if (progress != m_last_progress_emited) {
-            emit processStageInfo(m_cable_number, progress, m_current_command_description);
-            m_last_progress_emited = progress;
+        int const global_progress = _computeGlobalProgress(match.captured(1).toInt());
+        if (global_progress != m_last_progress_emited) {
+            emit processStageInfo(m_cable_number, global_progress, m_current_command_description);
+            m_last_progress_emited = global_progress;
         }
     }
+}
+
+int
+CubeFlasher::_computeGlobalProgress(int stage_progress) const
+{
+    // 7 nandflash stages in _appendFlashingCommands: erase, write×3, verify×3
+    static const QMap<QString, int> stage_offsets = {
+        {kErasingStage,            0},
+        {kWritingImageStage,       1},
+        {kVerifyingImageStage,     2},
+        {kWritingUbootStage,       3},
+        {kVerifyingUbootStage,     4},
+        {kWritingBootstrapStage,   5},
+        {kVerifyingBootstrapStage, 6},
+    };
+    static constexpr int kTotalStages = 7;
+
+    auto const it = stage_offsets.constFind(m_current_command_description);
+    if (it == stage_offsets.constEnd()) {
+        return stage_progress;
+    }
+    return (it.value() * 100 + stage_progress) / kTotalStages;
 }
 
 bool

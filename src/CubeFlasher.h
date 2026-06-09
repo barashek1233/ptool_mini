@@ -93,4 +93,5 @@ private:
     void _showAndLogErrorMessage(
         QString const& error_message_title, QString const& error_message_description, QString const& log_error_message);
     QString _appletToString(Applet applet);
+    int _computeGlobalProgress(int stage_progress) const;
 };
