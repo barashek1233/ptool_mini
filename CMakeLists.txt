@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 
 project(ptool_mini VERSION 1.0.0)
 
-set(PTOOL_MINI_VERSION_SUFFIX "rc8")
+set(PTOOL_MINI_VERSION_SUFFIX "rc9")
 set(PTOOL_MINI_VERSION_FULL "${PROJECT_VERSION}-${PTOOL_MINI_VERSION_SUFFIX}")
 
 include(FetchContent)
@@ -76,8 +76,11 @@ set(CPACK_PACKAGE_NAME "ptool-mini")
 set(CPACK_PACKAGE_VERSION "${PTOOL_MINI_VERSION_FULL}")
 set(CPACK_PACKAGE_CONTACT "support@aqsi.ru")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ptool_mini — утилита прошивки устройств")
-# libcap2-bin нужен для setcap в postinst; adduser — для addgroup
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt5core5a, libqt5network5, libcap2-bin, adduser (>= 3.11)")
+# libcap2-bin нужен для setcap в postinst; adduser — для addgroup.
+# Остальные зависимости (libqt5qml5, libfdt1, libconfig9 и т.п.) вычисляются
+# автоматически dpkg-shlibdeps по реальным библиотекам, на которые слинкован бинарь.
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcap2-bin, adduser (>= 3.11)")
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
