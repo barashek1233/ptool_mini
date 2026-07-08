@@ -331,8 +331,9 @@ CubeFlasher::_runNextCommand()
     arguments.prepend("--sam-ba");
     m_process.setArguments(arguments);
 
-    qCDebug(cat_cube_flasher).noquote()
-        << QStringLiteral("Запуск утилиты sam-ba с параметрами: %1").arg(m_process.arguments().join(','));
+    qCInfo(cat_cube_flasher).noquote()
+        << QStringLiteral("Выполняем команду прошивки (этап '%1'): %2 %3")
+               .arg(m_current_command_description, m_process.program(), m_process.arguments().join(QStringLiteral(" ")));
 
     m_process.start();
     if (m_next_command_index == 0) {

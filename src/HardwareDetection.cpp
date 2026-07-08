@@ -55,14 +55,16 @@ HardwareDetection::_processFinished(int exit_code, QProcess::ExitStatus exit_sta
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     qCInfo(cat_hardware_detection).noquote()
         << QStringView(u"Процесс '%1' завершился кодом '%2'.").arg(m_process->program(), QString::number(exit_code));
-    qCDebug(cat_hardware_detection).noquote() << QStringView(u"stderr:\n") << m_stderr;
-    qCDebug(cat_hardware_detection).noquote() << QStringView(u"stdout:\n") << m_stdout;
+    qCInfo(cat_hardware_detection).noquote()
+        << QStringLiteral("Полный результат выполнения команды определения HW ревизии. stderr:\n%1\nstdout:\n%2")
+               .arg(m_stderr, m_stdout);
 
 #else
     qCInfo(cat_hardware_detection).noquote()
         << QString("Процесс '%1' завершился кодом '%2'.").arg(m_process->program(), QString::number(exit_code));
-    qCDebug(cat_hardware_detection).noquote() << QStringLiteral("stderr:\n") << m_stderr;
-    qCDebug(cat_hardware_detection).noquote() << QStringLiteral("stdout:\n") << m_stdout;
+    qCInfo(cat_hardware_detection).noquote()
+        << QStringLiteral("Полный результат выполнения команды определения HW ревизии. stderr:\n%1\nstdout:\n%2")
+               .arg(m_stderr, m_stdout);
 #endif
     if (exit_status != QProcess::ExitStatus::NormalExit) {
         qCWarning(cat_hardware_detection).noquote()
@@ -180,9 +182,10 @@ HardwareDetection::checkHWRevision()
     if (not m_process->isOpen()) {
         qCInfo(cat_hardware_detection).noquote()
             << QStringLiteral("Запущен процесс проверки HW ревизии устройства %1").arg(m_device);
+        qCInfo(cat_hardware_detection).noquote()
+            << QStringLiteral("Выполняем команду определения HW ревизии: %1 %2")
+                   .arg(m_process->program(), m_process->arguments().join(QStringLiteral(" ")));
         m_process->start();
-        qCDebug(cat_hardware_detection).noquote() << QStringLiteral("Запуск приложения '%1' с аргументами '%2'")
-                                                         .arg(m_process->program(), m_process->arguments().join(", "));
 
         if (not m_detection_timer.isActive()) {
             m_detection_timer.start(timeoutForFailedHardwareDetection());

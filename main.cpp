@@ -6,6 +6,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileDevice>
+#include <QTemporaryFile>
+#include <memory>
 #include <sambatool.h>
 #include <unistd.h>
 #include <cstdio>
@@ -57,6 +59,39 @@ QString logLabel(QtMsgType type)
     return QStringLiteral("INFO");
 }
 
+// Пишет в файл (в отличие от консоли) абсолютно все сообщения без фильтрации:
+// это единственное место, где остаётся полная диагностика (детекция HW ревизии,
+// найденные USB-устройства, полные команды и вывод sam-ba и т.д.).
+QString setupFileLogging()
+{
+    auto log_file = std::make_shared<QFile>();
+    {
+        QTemporaryFile temp_file(QDir::tempPath() + QStringLiteral("/ptool_XXXXXX.log"));
+        temp_file.setAutoRemove(false);
+        if (!temp_file.open()) {
+            return {};
+        }
+        log_file->setFileName(temp_file.fileName());
+        temp_file.close();
+    }
+    if (!log_file->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+        return {};
+    }
+
+    LogMessageHandlers::instance().addHandler(
+        [log_file](QtMsgType type, QMessageLogContext const& context, QString const& msg, QString const& time) {
+            if (msg.startsWith(QStringLiteral("CAF:"), Qt::CaseInsensitive)) {
+                return;
+            }
+            QString const category = QString::fromLatin1(context.category);
+            QTextStream out(log_file.get());
+            out << time << " [" << logLabel(type) << "] [" << category << "] " << msg << "\n";
+            out.flush();
+            log_file->flush();
+        });
+
+    return log_file->fileName();
+}
 
 int runSambaTool(int argc, char* argv[])
 {
@@ -252,6 +287,16 @@ int main(int argc, char* argv[])
             }
             out.flush();
         });
+
+    QString const log_file_path = setupFileLogging();
+
+    qCInfo(cat_dialog).noquote()
+        << QStringLiteral("ptool_mini версия %1 запущена").arg(QStringLiteral(PTOOL_MINI_VERSION));
+    if (!log_file_path.isEmpty()) {
+        qCInfo(cat_dialog).noquote() << QStringLiteral("Полный лог записывается в файл: %1").arg(log_file_path);
+    } else {
+        qCWarning(cat_common).noquote() << QStringLiteral("Не удалось создать файл лога во временном каталоге");
+    }
 
     if (cpu == "atmel") {
         return runAtmelHeadless(application, image_path);

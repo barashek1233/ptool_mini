@@ -1,4 +1,5 @@
 #include "DevNotifyQtStyle.h"
+#include "loggingCategories.h"
 #include <QDebug>
 #include <thread>
 #include <unistd.h>
@@ -59,7 +60,12 @@ DevNotifyQtStyle::DevNotifyQtStyle(QObject* parent) : QObject(parent)
                             QString grandParentPath =
                                 udev_device_get_devpath(udev_device_get_parent(udev_device_get_parent(dev)));
 
-                            qDebug() << "emitting deviceConnectedOnCable" << devnode << grandParentPath;
+                            qCInfo(cat_common).noquote()
+                                << QStringLiteral(
+                                       "Обнаружено USB-устройство по паттерну Atmel SAM-BA "
+                                       "(idVendor=%1, idProduct=%2). Путь: '%3'. Устройство: '%4'.")
+                                       .arg(QString::fromLatin1(gvid), QString::fromLatin1(gpid), grandParentPath,
+                                            devnode);
                             QMetaObject::invokeMethod(
                                 this, "deviceConnectedOnCable", Q_ARG(QString, grandParentPath),
                                 Q_ARG(QString, devnode));
@@ -73,7 +79,9 @@ DevNotifyQtStyle::DevNotifyQtStyle(QObject* parent) : QObject(parent)
                         //                        qDebug() << grandParentPath << devnode << "\n\n";
 
                         if (connectedPaths.contains(grandParentPath)) {
-                            qDebug() << "emitting deviceDisconnectedOnCable" << devnode << grandParentPath;
+                            qCInfo(cat_common).noquote()
+                                << QStringLiteral("USB-устройство отключено. Путь: '%1'. Устройство: '%2'.")
+                                       .arg(grandParentPath, devnode);
                             QMetaObject::invokeMethod(
                                 this, "deviceDisconnectedOnCable", Q_ARG(QString, grandParentPath),
                                 Q_ARG(QString, devnode));
