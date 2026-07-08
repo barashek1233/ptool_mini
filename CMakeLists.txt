@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 
 project(ptool_mini VERSION 1.0.0)
 
-set(PTOOL_MINI_VERSION_SUFFIX "rc10")
+set(PTOOL_MINI_VERSION_SUFFIX "rc11")
 set(PTOOL_MINI_VERSION_FULL "${PROJECT_VERSION}-${PTOOL_MINI_VERSION_SUFFIX}")
 
 include(FetchContent)
