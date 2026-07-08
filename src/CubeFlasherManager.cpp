@@ -347,8 +347,12 @@ CubeFlasherManager::_scheduleRetry(int cable_number, QString const& device)
             qCDebug(cat_cube_flasher).noquote()
                 << QStringLiteral("Повторный запуск прошивки. Кабель: %1, устройство: %2")
                        .arg(QString::number(cable_number), retry_state.device);
+            // Намеренно не вызываем _cancelRetry здесь: это стёрло бы retry_state.elapsed
+            // и 2-минутный лимит на повторы никогда бы не срабатывал (сбрасывался бы на
+            // каждой попытке). Состояние очищается только при реальном успехе/отключении/
+            // переподключении устройства (см. _onFlasherCompleted, onDeviceDisconnected,
+            // onDeviceConnected).
             auto const device = retry_state.device;
-            _cancelRetry(cable_number);
             startFlashing(cable_number, device);
         });
     }

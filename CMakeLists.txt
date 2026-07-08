@@ -77,9 +77,13 @@ set(CPACK_PACKAGE_VERSION "${PTOOL_MINI_VERSION_FULL}")
 set(CPACK_PACKAGE_CONTACT "support@aqsi.ru")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ptool_mini — утилита прошивки устройств")
 # libcap2-bin нужен для setcap в postinst; adduser — для addgroup.
+# qml-module-qtquick2 — не зависимость libqt5quick5 (пакеты разделены в Debian/Ubuntu),
+# а сам QML-плагин QtQuick, загружаемый QQmlEngine в рантайме. dpkg-shlibdeps видит
+# только ELF-зависимости через линковщик и не может обнаружить эту зависимость сам —
+# без неё sam-ba падает на любой команде с "Type ... unavailable" / "Unknown port 'serial'".
 # Остальные зависимости (libqt5qml5, libfdt1, libconfig9 и т.п.) вычисляются
 # автоматически dpkg-shlibdeps по реальным библиотекам, на которые слинкован бинарь.
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcap2-bin, adduser (>= 3.11)")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcap2-bin, adduser (>= 3.11), qml-module-qtquick2")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
